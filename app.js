@@ -16,7 +16,7 @@ const swaggerSpec = {
     },
     servers: [
       {
-        url: "http://localhost:3000"
+        url: "https://apirestartesanias.onrender.com"
       }
     ],
   },
