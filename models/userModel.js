@@ -233,21 +233,17 @@ async function login(req, res) {
         const usuario = await Usuario.findOne({ email, state: true });
 
         // Verificar si el usuario existe y la contraseña es válida
-        console.log('Contraseña ingresada:', pss);
-        console.log('Hash almacenado:', usuario.pss);
-        /* console.log(await bcrypt.hash(usuario.pss));*/
-        console.log(await bcrypt.compare(pss , usuario.pss))
-
         if (usuario && await bcrypt.compare(pss, usuario.pss)) {
-            
-
             // Generar un token con el ID del usuario y la clave de sesión
             const token = generateToken(usuario._id);
 
+            // Enviar la respuesta con el token, ID y rol del usuario
             res.status(200).json({
                 error: false,
                 message: 'Inicio de sesión exitoso',
-                token
+                token,
+                id: usuario._id,
+                rol: usuario.rol // Suponiendo que "rol" está almacenado en el modelo de usuario
             });
         } else {
             res.status(401).json({
@@ -263,6 +259,7 @@ async function login(req, res) {
         });
     }
 }
+
 
 
 

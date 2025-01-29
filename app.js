@@ -11,7 +11,7 @@ const swaggerSpec = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "API Proyecto ACM",
+      title: "API Proyecto Artesanías",
       version: "1.0.0"
     },
     servers: [
