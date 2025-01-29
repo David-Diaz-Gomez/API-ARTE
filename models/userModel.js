@@ -119,37 +119,50 @@ async function read_usuarioByIdPost(req, res) {
 
 async function update_usuario(req, res) {
     const usuarioId = req.params.id;
-    
-    const updatedData = {
-        name: req.body.name,
-        email: req.body.email,
-        pss: req.body.pss,
-        rol: req.body.rol
-    };
 
     try {
-        const result = await Usuario.findOneAndUpdate({ _id: usuarioId }, { $set: updatedData });
-        console.log(result);
+        // Construcción del objeto de actualización, excluyendo campos no modificables
+        const updatedData = {
+            name: req.body.name,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            documentId: req.body.documentId,
+            state: req.body.state !== undefined ? req.body.state : true,
+            adress: req.body.adress,
+            phone: req.body.phone,
+            dateOfBirth: req.body.dateOfBirth,
+            rol: req.body.rol
+        };
+
+        // Si se proporciona una nueva contraseña, se encripta antes de actualizar
+        if (req.body.pss) {
+            updatedData.pss = await bcrypt.hash(req.body.pss, saltRounds);
+        }
+
+        // Evitar la modificación de creationDate
+        const result = await Usuario.findByIdAndUpdate(usuarioId, { $set: updatedData }, { new: true });
 
         if (result) {
             res.status(200).json({
                 resultado: true,
-                msg: 'Usuario modificado exitosamente'
+                msg: 'Usuario modificado exitosamente',
+                data: result
             });
         } else {
             res.status(404).json({
                 resultado: false,
-                msg: 'No se pudo modificar el usuario, verifique el id'
+                msg: 'No se pudo modificar el usuario, verifique el ID'
             });
         }
     } catch (error) {
         res.status(500).json({
             resultado: false,
             msg: 'Ocurrió un error al modificar el usuario',
-            error: error
+            error: error.message
         });
     }
 }
+
 
 
 
