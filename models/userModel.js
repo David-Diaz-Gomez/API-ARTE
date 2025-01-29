@@ -213,6 +213,10 @@ async function login(req, res) {
         const usuario = await Usuario.findOne({ email, state: true });
 
         // Verificar si el usuario existe y la contraseña es válida
+        console.log('Contraseña ingresada:', pss);
+        console.log('Hash almacenado:', usuario.pss);
+        console.log(await bcrypt.compare(pss , usuario.pss))
+
         if (usuario && await bcrypt.compare(pss, usuario.pss)) {
             
 
