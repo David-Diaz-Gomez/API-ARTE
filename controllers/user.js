@@ -12,51 +12,87 @@ const userModel = require('../models/userModel')
  *          type: object
  *          properties:
  *              name:
- *                  type: String
+ *                  type: string
  *                  description: Nombre de usuario
+ *              lastName:
+ *                  type: string
+ *                  description: Apellido del usuario
  *              email:
- *                  type: String
+ *                  type: string
  *                  description: Correo de usuario
+ *              documentId:
+ *                  type: string
+ *                  description: Documento de identidad (único)
  *              pss:
- *                  type: String
+ *                  type: string
  *                  description: Contraseña
  *              state:
- *                  type: Boolean
+ *                  type: boolean
  *                  description: Estado del usuario
+ *              adress:
+ *                  type: string
+ *                  description: Dirección del usuario
+ *              phone:
+ *                  type: number
+ *                  description: Teléfono del usuario
+ *              dateOfBirth:
+ *                  type: string
+ *                  format: date
+ *                  description: Fecha de nacimiento
+ *              creationDate:
+ *                  type: string
+ *                  format: date-time
+ *                  description: Fecha de creación (generada automáticamente)
+ *              rol:
+ *                  type: string
+ *                  format: uuid
+ *                  description: ID del rol asignado al usuario
  *          required:
  *              - name
+ *              - lastName
  *              - email
+ *              - documentId
  *              - pss
+ *              - adress
+ *              - phone
+ *              - dateOfBirth
+ *              - rol
  *          example:
  *              name: Cristian
+ *              lastName: Arrieta
  *              email: craparrag@udistrital.edu.co
- *              pss: 1234
+ *              documentId: "123456789"
+ *              pss: "1234"
  *              state: true
- * 
+ *              adress: "Calle 123 #45-67"
+ *              phone: 3201234567
+ *              dateOfBirth: "1990-05-15"
+ *              creationDate: "2024-02-10T12:34:56Z"
+ *              rol: "65d1b92e6e6a6f4c12345678"
  */
 
 /**
  * @swagger
  * /usuario/add-usuario:
  *  post:
- *      summary: crear nuevo usuario
+ *      summary: Crear un nuevo usuario
  *      tags: [User]
  *      requestBody:
  *          required: true
  *          content:
- *           application/json:
- *              schema:
- *                  type: object
- *                  $ref: '#/components/schemas/User'
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/User'
  *      responses:
  *          201:
- *              description: Se creo el usuario
- *          404:
- *              description: Error interno
- *                  
- * 
+ *              description: Usuario creado exitosamente
+ *          400:
+ *              description: Error de validación en los datos enviados
+ *          500:
+ *              description: Error interno del servidor
  */
 router.post('/add-usuario', userModel.add_usuario);
+
 
 /**
  * @swagger

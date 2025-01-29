@@ -5,49 +5,56 @@ const saltRounds = 10; // Número de rondas de sal. Cuanto mayor, más seguro, p
 
 
 async function add_usuario(req, res) {
-    try{
-      // Espera a que se complete la verificación del token
-      await verifyToken(req, res);
-    // Generar un hash de la contraseña antes de almacenarla
-    bcrypt.hash(req.body.pss, saltRounds, (err, hashedPassword) => {
-        if (err) {
-            return res.status(500).json({
-                error: true,
-                message: `Error al hashear la contraseña: ${err}`
+    try {
+        // Espera a que se complete la verificación del token
+        await verifyToken(req, res);
+
+        // Generar un hash de la contraseña antes de almacenarla
+        bcrypt.hash(req.body.pss, saltRounds, async (err, hashedPassword) => {
+            if (err) {
+                return res.status(500).json({
+                    error: true,
+                    message: `Error al hashear la contraseña: ${err}`
+                });
+            }
+
+            const usuario = new Usuario({
+                name: req.body.name,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                documentId: req.body.documentId,
+                pss: hashedPassword,
+                state: req.body.state !== undefined ? req.body.state : true,
+                adress: req.body.adress,
+                phone: req.body.phone,
+                dateOfBirth: req.body.dateOfBirth,
+                creationDate: new Date(),
+                rol: req.body.rol
             });
-        }
 
-        const usuario = new Usuario({
-            name: req.body.name,
-            email: req.body.email,
-            pss: hashedPassword, // Almacena el hash en lugar de la contraseña original
-            rol: req.body.rol
-        });
-
-        usuario.save()
-            .then(result => {
+            try {
+                const result = await usuario.save();
                 res.status(201).json({
                     error: false,
                     message: 'Se creó el usuario',
                     data: result
                 });
-            })
-            .catch(error => {
+            } catch (error) {
                 res.status(500).json({
                     error: true,
                     message: `Error al guardar el usuario: ${error}`
                 });
-            });
-    });
-  }catch (error) {
-        
-    res.status(500).json({
-        error: true,
-        message: `Error en el servidor: ${error}`,
-        code: 0
-    });
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Error en el servidor: ${error}`,
+            code: 0
+        });
+    }
 }
-}
+
 
 async function read_usuario(req, res) {
     try {
@@ -215,6 +222,7 @@ async function login(req, res) {
         // Verificar si el usuario existe y la contraseña es válida
         console.log('Contraseña ingresada:', pss);
         console.log('Hash almacenado:', usuario.pss);
+        /* console.log(await bcrypt.hash(usuario.pss));*/
         console.log(await bcrypt.compare(pss , usuario.pss))
 
         if (usuario && await bcrypt.compare(pss, usuario.pss)) {
