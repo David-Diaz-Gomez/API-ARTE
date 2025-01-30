@@ -74,7 +74,7 @@ const userModel = require('../models/userModel')
  * /usuario/add-usuario:
  *  post:
  *      summary: Crear un nuevo usuario
- *      tags: [User]
+ *      tags: [Usuario]
  *      requestBody:
  *          required: true
  *          content:
@@ -97,7 +97,7 @@ router.post('/add-usuario', userModel.add_usuario);
  * /usuario/read-usuario:
  *  get:
  *      summary: Todos los usuarios
- *      tags: [User]
+ *      tags: [Usuario]
  *      responses:
  *          200:
  *              description: todos los usuarios
@@ -120,7 +120,7 @@ router.get('/read-usuario', userModel.read_usuario);
  * /usuario/read-usuario/{id}:
  *  get:
  *      summary: Obtener un usuario por ID
- *      tags: [User]
+ *      tags: [Usuario]
  *      parameters:
  *          - in: path
  *            name: id
@@ -152,7 +152,7 @@ router.get('/read-usuario/:id', userModel.read_usuarioById);
  * /usuario/read-usuario-post:
  *  post:
  *      summary: Obtener un usuario por ID mediante el cuerpo de la solicitud
- *      tags: [User]
+ *      tags: [Usuario]
  *      requestBody:
  *          required: true
  *          content:
@@ -189,7 +189,7 @@ router.post('/read-usuario-post', userModel.read_usuarioByIdPost);
  * /usuario/update/{id}:
  *  put:
  *      summary: Actualizar un usuario por ID
- *      tags: [User]
+ *      tags: [Usuario]
  *      parameters:
  *          - in: path
  *            name: id
@@ -263,7 +263,7 @@ router.put('/update-usuario/:id', userModel.update_usuario);
  * /usuario/delete-usuario/{id}:
  *  delete:
  *      summary: Eliminar un usuario por ID
- *      tags: [User]
+ *      tags: [Usuario]
  *      parameters:
  *          - in: path
  *            name: id
@@ -299,7 +299,7 @@ router.delete('/delete-usuario/:id', userModel.delete_usuario);
  * /usuario/update-acceso-usuario/{id}:
  *  put:
  *      summary: Modificar el acceso de un usuario (estado)
- *      tags: [User]
+ *      tags: [Usuario]
  *      parameters:
  *          - in: path
  *            name: id
