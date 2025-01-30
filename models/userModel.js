@@ -360,21 +360,21 @@ async function login(req, res) {
     const { email, pss } = req.body;
 
     try {
-        // Buscar el usuario por correo electrónico y estado activo
-        const usuario = await Usuario.findOne({ email, state: true });
+        // Buscar el usuario por correo electrónico y estado activo, incluyendo la información del rol
+        const usuario = await Usuario.findOne({ email, state: true }).populate('rol');
 
         // Verificar si el usuario existe y la contraseña es válida
         if (usuario && await bcrypt.compare(pss, usuario.pss)) {
             // Generar un token con el ID del usuario y la clave de sesión
             const token = generateToken(usuario._id);
 
-            // Enviar la respuesta con el token, ID y rol del usuario
+            // Enviar la respuesta con el token, ID y detalles del rol
             res.status(200).json({
                 error: false,
                 message: 'Inicio de sesión exitoso',
                 token,
                 id: usuario._id,
-                rol: usuario.rol // Suponiendo que "rol" está almacenado en el modelo de usuario
+                rol: usuario.rol // Aquí rol incluirá toda su información
             });
         } else {
             res.status(401).json({
@@ -390,6 +390,7 @@ async function login(req, res) {
         });
     }
 }
+
 
 function generateToken(userId) {
 

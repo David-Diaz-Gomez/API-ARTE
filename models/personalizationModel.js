@@ -38,22 +38,10 @@ async function add_personalization(req, res) {
 // Obtener todas las personalizaciones
 async function read_personalizations(req, res) {
     try {
-        // Espera a que se complete la verificación del token
-        await verifyToken(req, res);
-
-        const personalizations = await Personalization.aggregate([
-            {
-                $lookup: {
-                    from: 'usuarios',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'user'
-                }
-            },
-            {
-                $unwind: '$user'
-            }
-        ]);
+        // Usamos el populate para traer los datos del usuario (solo los de userId)
+        const personalizations = await Personalization.find()
+            .populate('userId')  // Puedes incluir los campos que necesites del usuario
+            .exec();
 
         res.status(200).json({ personalizations });
     } catch (error) {
@@ -64,6 +52,7 @@ async function read_personalizations(req, res) {
         });
     }
 }
+
 
 // Obtener una personalización por su ID
 async function read_personalizationById(req, res) {

@@ -12,7 +12,7 @@ const UsuarioSchema = new Schema({
     phone: { type: Number, required: [true, 'El teléfono es requerido'] },
     dateOfBirth: { type: Date, required: [true, 'La fecha de nacimiento es requerida'] },
     creationDate: { type: Date, default: Date.now }, // Se agrega la fecha de creación automáticamente
-    rol: { type: Schema.Types.ObjectId, ref: 'rols', required: [true, 'El rol es requerido'] }
+    rol: { type: Schema.Types.ObjectId, ref: 'Rol', required: [true, 'El rol es requerido'] }
 });
 
 module.exports = mongoose.model('Usuario', UsuarioSchema);

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 require('dotenv').config();
@@ -28,6 +29,11 @@ const port = 3000; // El puerto en el que se ejecutará el servidor
 
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
+
+app.use(cors({
+  origin: "http://127.0.0.1:5500" // Permite solo el frontend
+  // origin: "*" // Para permitir cualquier origen (no recomendado en producción)
+}));
 
 mongoose.connect('mongodb+srv://davidgerdiaz777:qYFGV1gnC4APnzBa@cluster0.zk9cc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useUnifiedTopology: true,

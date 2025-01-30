@@ -12,7 +12,7 @@ const PersonalizationSchema = new Schema({
     description: { type: String, required: [true, 'La descripción es requerida'] },
     budget: { type: Number, required: [true, 'El precio sugerido es requerido'] },
     date: { type: Date, default: Date.now },
-    userId: { type: Schema.Types.ObjectId, ref: 'usuarios', required: [true, 'El ID de usuario es requerido'] }
+    userId: { type: Schema.Types.ObjectId, ref: 'Usuario', required: [true, 'El ID de usuario es requerido'] }
 });
 
 module.exports = mongoose.model('Personalization', PersonalizationSchema);

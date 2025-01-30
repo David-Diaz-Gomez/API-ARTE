@@ -7,7 +7,8 @@ app.use( '/rol', require('./rol') );
 app.use( '/categoriaProd', require('./categoryProd') );
 app.use( '/pos', require('./pointsOfSale') );
 app.use( '/personalization', require('./personalization') );
-
+app.use( '/product', require('./product') );
+app.use( '/stock', require('./stock') );
 app._router.stack.forEach((middleware) => {
     if (middleware.route) {
         console.log(middleware.route.path);
