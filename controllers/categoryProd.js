@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const rolModel = require('../models/rolModel')
+const cpModel = require('../models/categoryProdModel')
 
 
 /**
  * @swagger
  * components:
  *  schemas:
- *     Rol:
+ *     CategoryProd:
  *          type: object
  *          properties:
  *              state:
@@ -20,39 +20,39 @@ const rolModel = require('../models/rolModel')
  *              - name
  *          example:
  *              state: true
- *              name: Administrador
+ *              name: indígena
  * 
  */
 
 /**
  * @swagger
- * /rol/add-rol:
+ * /categoriaProd/add-cp:
  *  post:
  *      summary: Crear un nuevo rol
- *      tags: [Rol]
+ *      tags: [Categoria Producto]
  *      requestBody:
  *          required: true
  *          content:
  *           application/json:
  *              schema:
  *                  type: object
- *                  $ref: '#/components/schemas/Rol'
+ *                  $ref: '#/components/schemas/CategoryProd'
  *      responses:
  *          201:
- *              description: Se creó el rol
+ *              description: Se creó la categoría
  *          404:
  *              description: Error interno
  *                  
  * 
  */
-router.post("/add-rol", rolModel.add_rol);
+router.post("/add-cp", cpModel.add_cp);
 
 /**
  * @swagger
- * /rol/read-rol:
+ * /categoriaProd/read-cp:
  *  get:
  *      summary: Todos los roles
- *      tags: [Rol]
+ *      tags: [Categoria Producto]
  *      responses:
  *          200:
  *              description: Todos los roles
@@ -61,39 +61,40 @@ router.post("/add-rol", rolModel.add_rol);
  *                      schema:
  *                          type: array
  *                          items:
- *                              $ref: '#/components/schemas/Rol'
+ *                              $ref: '#/components/schemas/CategoryProd'
  * 
  *               
  *                  
  * 
  */
-router.get("/read-rol", rolModel.read_rol);
+router.get("/read-cp", cpModel.read_cp);
 
 /**
  * @swagger
- * /rol/read-rol/{id}:
+ * /categoriaProd/read-cp/{id}:
  *  get:
- *      summary: Obtener un rol de usuario por ID
- *      tags: [Rol]
+ *      summary: Obtener una categoría de producto por ID
+ *      tags: [Categoria Producto]
  *      parameters:
  *          - in: path
  *            name: id
  *            schema:
  *                type: string
  *            required: true
- *            description: ID del rol del usuario a consultar
+ *            description: ID de la categoría de producto a consultar
  *      responses:
  *          200:
- *              description: Rol de usuario encontrada exitosamente
+ *              description: Categoría de producto encontrada exitosamente
  *              content:
  *                  application/json:
  *                      schema:
- *                          $ref: '#/components/schemas/Rol'
+ *                          $ref: '#/components/schemas/CategoryProd'
  *          404:
- *              description: Rol de usuario no encontrada
+ *              description: Categoría de producto no encontrada
  *          500:
  *              description: Error en el servidor
  */
-router.get("/read-rol/:id", rolModel.read_rolById);
+router.get("/read-cp/:id", cpModel.read_cpById);
+
 
 module.exports = router;

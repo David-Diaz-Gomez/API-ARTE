@@ -35,7 +35,31 @@ function add_rol(req, res) {
     }
   }
 
+   async function read_rolById(req, res) {
+      try {
+          const { id } = req.params;
+          const rol = await Rol.findById(id);
+  
+          if (!rol) {
+              return res.status(404).json({
+                  error: true,
+                  message: "Rol no encontrada",
+                  code: 1,
+              });
+          }
+  
+          res.status(200).json({ cp });
+      } catch (error) {
+          res.status(500).json({
+              error: true,
+              message: `Server error: ${error}`,
+              code: 0,
+          });
+      }
+  }
+
 module.exports = {
     add_rol,
-    read_rol
+    read_rol,
+    read_rolById
 };
