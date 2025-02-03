@@ -77,8 +77,6 @@ async function read_personalizationById(req, res) {
 // Actualizar una personalización existente
 async function update_personalization(req, res) {
     try {
-        // Espera a que se complete la verificación del token
-        await verifyToken(req, res);
 
         const updatedPersonalization = await Personalization.findByIdAndUpdate(
             req.params.id, 
