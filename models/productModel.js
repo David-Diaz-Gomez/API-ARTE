@@ -160,7 +160,18 @@ async function delete_product(req, res) {
       await deleteImageFromCloudinary(product.image); // Usar el servicio para eliminar la imagen de Cloudinary
   
       // Eliminar el producto de la base de datos
-      await product.remove();
+      const deletedProduct = await Stock.findByIdAndDelete(productId);
+      if (!deletedProduct) {
+        return res.status(404).json({
+            error: true,
+            message: "Stock no encontrado"
+        });
+    }
+    
+    res.status(200).json({
+        error: false,
+        message: "Stock eliminado correctamente"
+    });
   
       res
         .status(200)
