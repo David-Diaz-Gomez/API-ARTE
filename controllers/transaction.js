@@ -31,7 +31,7 @@ const transactionModel = require('../models/transactionModel');
 
 /**
  * @swagger
- * /payment/all:
+ * /transaction/all:
  *  get:
  *      summary: Obtener todas las transacciones
  *      tags: [transaccción]

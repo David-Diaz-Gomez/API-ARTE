@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Transaction = require('../dtos/transactionDTO');
 const Invoice = require('../dtos/invoiceDTO');
 const ProductDetails = require('../dtos/productDetailsDTO');
+const Stock = require('../dtos/stockDTO');
 
 async function processPayment(req, res) {
     const session = await mongoose.startSession();
@@ -29,13 +30,36 @@ async function processPayment(req, res) {
 
         const savedInvoice = await invoice.save({ session });
 
-        // 3. Insertar detalles de productos
-        const productDetails = products.map(product => ({
-            idInvoice: savedInvoice._id,
-            idProduct: product.idProduct,
-            quantity: product.quantity,
-            idPOS: product.idPOS
-        }));
+        // 3. Insertar detalles de productos y actualizar stock
+        const productDetails = [];
+
+        for (const product of products) {
+            // Buscar en la colección Stock
+            const stockRecord = await Stock.findOne(
+                { idProduct: product.idProduct, idPOS: product.idPOS }
+            ).session(session);
+
+            if (!stockRecord) {
+                throw new Error(`Stock no encontrado para el producto ${product.idProduct} en POS ${product.idPOS}`);
+            }
+
+            // Verificar si hay suficiente stock
+            if (stockRecord.amount < product.quantity) {
+                throw new Error(`Stock insuficiente para el producto ${product.idProduct}`);
+            }
+
+            // Actualizar la cantidad en stock
+            stockRecord.amount -= product.quantity;
+            await stockRecord.save({ session });
+
+            // Insertar el detalle del producto
+            productDetails.push({
+                idInvoice: savedInvoice._id,
+                idProduct: product.idProduct,
+                quantity: product.quantity,
+                idPOS: product.idPOS
+            });
+        }
 
         await ProductDetails.insertMany(productDetails, { session });
 
@@ -62,6 +86,7 @@ async function processPayment(req, res) {
         });
     }
 }
+
 
 async function getPaymentDetails(req, res) {
     try {
