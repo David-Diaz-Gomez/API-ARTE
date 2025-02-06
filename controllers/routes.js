@@ -9,7 +9,7 @@ app.use( '/pos', require('./pointsOfSale') );
 app.use( '/personalization', require('./personalization') );
 app.use( '/product', require('./product') );
 app.use( '/stock', require('./stock') );
-app.use( '/wishList', require('./wishList') );
+app.use( '/wishlist', require('./wishList') );
 app.use( '/mop', require('./meansOfPay') );
 app.use('/payment', require('./payment'));
 app.use('/transaction', require('./transaction'));

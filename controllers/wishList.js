@@ -82,4 +82,33 @@ router.get("/read-wishList", wishListModel.read_wishList);
  */
 router.delete("/delete-wishList/:id", wishListModel.delete_wishList);
 
+
+/**
+ * @swagger
+ * /wishlist/read-wishListByUserId/{id}:
+ *  get:
+ *      summary: Obtener la lista de deseos de un usuario específico
+ *      tags: [Lista de deseos]
+ *      parameters:
+ *          - in: path
+ *            name: id
+ *            schema:
+ *                type: string
+ *            required: true
+ *            description: ID del usuario para obtener su lista de deseos
+ *      responses:
+ *          200:
+ *              description: Lista de deseos del usuario obtenida exitosamente
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                              $ref: '#/components/schemas/WishList'
+ *          404:
+ *              description: No se encontraron listas de deseos para este usuario
+ */
+
+router.get("/read-wishListByUserId/:userId", wishListModel.read_wishListByUserId);
+
 module.exports = router;

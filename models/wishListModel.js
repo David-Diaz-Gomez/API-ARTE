@@ -34,6 +34,30 @@ async function read_wishList(req, res) {
         });
     }
 }
+
+async function read_wishListByUserId(req, res) {
+    try {
+        const { userId } = req.params;
+        const wishList = await WishList.find({ userId })
+            .populate('productId')  // Trae la información del producto
+            .populate('userId');     // Trae la información del usuario
+        
+        if (!wishList.length) {
+            return res.status(404).json({
+                error: true,
+                message: "No se encontraron listas de deseos para este usuario"
+            });
+        }
+
+        res.status(200).json({ error: false, data: wishList });
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Error del servidor: ${error}`
+        });
+    }
+}
+
 async function delete_wishList(req, res) {
     try {
         const { id } = req.params;
@@ -60,5 +84,6 @@ async function delete_wishList(req, res) {
 module.exports = {
     add_wishList,
     read_wishList,
-    delete_wishList
+    delete_wishList,
+    read_wishListByUserId
 };
