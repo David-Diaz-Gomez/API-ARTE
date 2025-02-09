@@ -290,10 +290,57 @@ async function getTransactionCountByUser(req, res) {
     }
 }
 
+async function getTopSellingProducts(req, res) {
+    try {
+        const productSales = await ProductDetails.aggregate([
+            {
+                $group: {
+                    _id: "$idProduct",
+                    totalSold: { $sum: "$quantity" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "products", // Asegúrate de que coincide con el nombre de tu colección de productos
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productInfo"
+                }
+            },
+            {
+                $unwind: "$productInfo"
+            },
+            {
+                $project: {
+                    _id: 0,
+                    idProduct: "$_id",
+                    productName: "$productInfo.name", // Ajusta según el campo del nombre del producto
+                    totalSold: 1
+                }
+            },
+            {
+                $sort: { totalSold: -1 } // Ordena de mayor a menor
+            }
+        ]);
+
+        res.status(200).json({
+            error: false,
+            data: productSales
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Error obteniendo los productos más vendidos: ${error.message}`
+        });
+    }
+}
+
 module.exports = { 
     processPayment,
     getPaymentDetails,
     getTotalAndPOSSales,
     getTotalSalesByPOS,
-    getTransactionCountByUser
+    getTransactionCountByUser,
+    getTopSellingProducts
 };

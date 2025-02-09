@@ -23,7 +23,7 @@ router.patch("/update-acceso-product/:productId", productModel.updateAcceso_prod
 router.put("/update-product/:productId", upload.single('image'), productModel.update_product);
 
 // Ruta para obtener todos los productos
-router.get("/read-by-categoria", productModel.count_products_by_category);
+// router.get("/read-by-categoria", productModel.count_products_by_category);
 
 module.exports = router;
 
@@ -250,25 +250,6 @@ module.exports = router;
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Producto no encontrado
- *       500:
- *         description: Error en el servidor
- */
-
-/**
- * @swagger
- * /product/read-by-categoria:
- *   get:
- *     summary: Obtener el conteo de productos por categoría
- *     tags: [Productos]
- *     responses:
- *       200:
- *         description: Retorna el número de productos por categoría
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               additionalProperties:
- *                 type: integer
  *       500:
  *         description: Error en el servidor
  */

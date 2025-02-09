@@ -224,4 +224,35 @@ router.get("/transaction-count", paymentModel.getTransactionCountByUser);
 router.get("/read-total-pos-sales/:idPOS", paymentModel.getTotalSalesByPOS);
 
 
+/**
+ * @swagger
+ * /payment/top-selling-products:
+ *  get:
+ *      summary: Obtener los productos más vendidos
+ *      tags: [Pagos]
+ *      responses:
+ *          200:
+ *              description: Lista de productos más vendidos ordenados por cantidad
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                              type: object
+ *                              properties:
+ *                                  idProduct:
+ *                                      type: string
+ *                                      description: ID del producto
+ *                                  productName:
+ *                                      type: string
+ *                                      description: Nombre del producto
+ *                                  totalSold:
+ *                                      type: integer
+ *                                      description: Cantidad total vendida
+ *          500:
+ *              description: Error interno del servidor
+ */
+router.get("/top-selling-products", paymentModel.getTopSellingProducts);
+
+
 module.exports = router;
