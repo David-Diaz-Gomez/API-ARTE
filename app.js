@@ -6,6 +6,7 @@ const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 require('dotenv').config();
+require('./services/emailService');
 
 
 const swaggerSpec = {
