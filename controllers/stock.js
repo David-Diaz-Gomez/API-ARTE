@@ -156,4 +156,45 @@ router.put("/update-stock/:id", stockModel.update_stock);
  */
 router.delete("/delete-stock/:id", stockModel.delete_stock);
 
+
+/**
+ * @swagger
+ * /stock/read-cout-stock-by-pos:
+ *  get:
+ *      summary: Obtener la cantidad total de productos por punto de venta
+ *      tags: [Stock]
+ *      responses:
+ *          200:
+ *              description: Lista de stock por punto de venta
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                              $ref: '#/components/schemas/Stock'
+ *          500:
+ *              description: Error en el servidor
+ */
+router.get("/read-cout-stock-by-pos", stockModel.count_products_by_POS);
+
+/**
+ * @swagger
+ * /stock/read-stock_by_category:
+ *  get:
+ *      summary: Obtener la cantidad total de stock por categoría de producto
+ *      tags: [Stock]
+ *      responses:
+ *          200:
+ *              description: Lista de stock por categoría de producto
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: array
+ *                          items:
+ *                              $ref: '#/components/schemas/Stock'
+ *          500:
+ *              description: Error en el servidor
+ */
+router.get("/read-stock_by_category", stockModel.count_stock_by_category);
+
 module.exports = router;

@@ -1,25 +1,34 @@
 const WishList = require('../dtos/wishListDTO');
 
-function add_wishList(req, res) {
-    const wl = new WishList({
-        productId: req.body.productId,
-        userId: req.body.userId
-    });
-    
-    wl.save()
-        .then(result => {
-            res.status(201).json({
-                error: false,
-                message: "Lista de deseos agregada exitosamente",
-                data: result
-            });
-        })
-        .catch(error => {
-            res.status(500).json({
+async function add_wishList(req, res) {
+    try {
+        const { productId, userId } = req.body;
+
+        // Verificar si ya existe una entrada con el mismo productId y userId
+        const existingWish = await WishList.findOne({ productId, userId });
+
+        if (existingWish) {
+            return res.status(400).json({
                 error: true,
-                message: `Error del servidor: ${error}`
+                message: "El producto ya está en la lista de deseos del usuario"
             });
+        }
+
+        // Si no existe, agregarlo
+        const wl = new WishList({ productId, userId });
+
+        const result = await wl.save();
+        res.status(201).json({
+            error: false,
+            message: "Lista de deseos agregada exitosamente",
+            data: result
         });
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Error del servidor: ${error}`
+        });
+    }
 }
 async function read_wishList(req, res) {
     try {

@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const Personalization = require('../dtos/personalizationDTO');  // Asegúrate de ajustar la ruta
+const personalizationObserver = require('../models/personalizationObserver');
+const Usuario = require('../dtos/userDTO');
 
 // Crear una nueva personalización
 async function add_personalization(req, res) {
     try {
-
         const personalization = new Personalization({
             category: req.body.category,
             state: req.body.state || 'pendiente',
@@ -13,24 +14,37 @@ async function add_personalization(req, res) {
             userId: req.body.userId
         });
 
-        try {
-            const result = await personalization.save();
-            res.status(201).json({
-                error: false,
-                message: 'Se creó la personalización',
-                data: result
-            });
-        } catch (error) {
-            res.status(500).json({
-                error: true,
-                message: `Error al guardar la personalización: ${error}`
-            });
-        }
+        const result = await personalization.save();
+
+        // Obtener información del usuario
+        const user = await Usuario.findById(req.body.userId);
+        const nombreUsuario = user ? user.name : "Desconocido";
+        const correoUsuario = user ? user.email : "Desconocido";
+
+        console.log("🔴 Emitiendo evento personalizationCreated con datos:", {
+            description: req.body.description,
+            budget: req.body.budget,
+            nombreUsuario,
+            correoUsuario
+        });
+        
+        personalizationObserver.emit("personalizationCreated", {
+            description: req.body.description,
+            budget: req.body.budget,
+            nombreUsuario,
+            correoUsuario
+        });
+
+        res.status(201).json({
+            error: false,
+            message: 'Se creó la personalización',
+            data: result
+        });
+
     } catch (error) {
         res.status(500).json({
             error: true,
-            message: `Error en el servidor: ${error}`,
-            code: 0
+            message: `Error en el servidor: ${error}`
         });
     }
 }
@@ -77,7 +91,6 @@ async function read_personalizationById(req, res) {
 // Actualizar una personalización existente
 async function update_personalization(req, res) {
     try {
-
         const updatedPersonalization = await Personalization.findByIdAndUpdate(
             req.params.id, 
             {
@@ -86,7 +99,7 @@ async function update_personalization(req, res) {
                 description: req.body.description,
                 budget: req.body.budget
             },
-            { new: true }  // Retorna el documento actualizado
+            { new: true } // Retorna el documento actualizado
         );
 
         if (!updatedPersonalization) {
@@ -96,16 +109,29 @@ async function update_personalization(req, res) {
             });
         }
 
+        // Obtener información del usuario
+        const user = await Usuario.findById(updatedPersonalization.userId);
+        const nombreUsuario = user ? user.name : "Desconocido";
+        const correoUsuario = user ? user.email : "Desconocido";
+
+        // Disparar evento
+        personalizationObserver.emit("personalizationUpdated", {
+            description: req.body.description,
+            budget: req.body.budget,
+            nombreUsuario,
+            correoUsuario
+        });
+
         res.status(200).json({
             error: false,
             message: 'Personalización actualizada',
             data: updatedPersonalization
         });
+
     } catch (error) {
         res.status(500).json({
             error: true,
-            message: `Error en el servidor: ${error}`,
-            code: 0
+            message: `Error en el servidor: ${error}`
         });
     }
 }

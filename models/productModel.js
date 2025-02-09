@@ -185,6 +185,31 @@ async function delete_product(req, res) {
     }
   }
 
+  async function count_products_by_category(req, res) {
+    try {
+      const counts = await Product.aggregate([
+        { $match: { state: true } }, // Filtrar solo productos activos
+        { $group: { _id: "$category", count: { $sum: 1 } } }, // Agrupar por categoría y contar
+        { $lookup: { 
+            from: "categoryprods", 
+            localField: "_id", 
+            foreignField: "_id", 
+            as: "category_info" 
+        }},
+        { $unwind: "$category_info" }, // Descomponer el array de categoría
+        { $project: { _id: 0, category: "$category_info.name", count: 1 } } // Formato de salida
+      ]);
+  
+      res.status(200).json({ error: false, data: counts });
+    } catch (error) {
+      console.error("Error en el servidor:", error);
+      res.status(500).json({
+        error: true,
+        message: `Error en el servidor: ${error.message || error}`,
+      });
+    }
+  }
+
 function extractPublicId(url) {
   const regex = /\/v\d+\/([^/]+)/;
   const matches = url.match(regex);
@@ -192,6 +217,7 @@ function extractPublicId(url) {
 }
 
 module.exports = {
+  count_products_by_category,
   add_product,
   read_product,
   read_productById,

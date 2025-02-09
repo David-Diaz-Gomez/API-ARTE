@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PersonalizationSchema = new Schema({
-    category: { type: String, required: [true, 'La categoría de la persona es requerida'] },
+    category: { type: String, required: [true, 'La categoría es requerida'] },
     state: { 
         type: String, 
         enum: ['pendiente', 'aceptado', 'rechazado'], 

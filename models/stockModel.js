@@ -122,11 +122,108 @@ async function delete_stock(req, res) {
     }
 }
 
+// Obtener la cantidad total de productos por punto de venta
+async function count_products_by_POS(req, res) {
+    try {
+        const stockAggregation = await Stock.aggregate([
+            {
+                $group: {
+                    _id: "$idPOS",  // Agrupa por punto de venta
+                    totalAmount: { $sum: "$amount" }  // Suma la cantidad de productos en cada POS
+                }
+            },
+            {
+                $lookup: {
+                    from: "pointsofsales",  // Asegúrate de que es el nombre correcto en MongoDB
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "posInfo"
+                }
+            },
+            {
+                $unwind: "$posInfo"
+            },
+            {
+                $project: {
+                    _id: 0,
+                    idPOS: "$_id",
+                    namePOS: "$posInfo.name",  // Ajusta según el campo correcto en tu modelo de POS
+                    totalAmount: 1
+                }
+            }
+        ]);
+
+        res.status(200).json({ stockAggregation });
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Error del servidor: ${error}`
+        });
+    }
+}
+
+
+// Obtener la cantidad total de stock por categoría de producto
+async function count_stock_by_category(req, res) {
+    try {
+        const stockByCategory = await Stock.aggregate([
+            {
+                $lookup: {
+                    from: "products", // Asegúrate de que coincide con el nombre real de la colección
+                    localField: "idProduct",
+                    foreignField: "_id",
+                    as: "productInfo"
+                }
+            },
+            {
+                $unwind: "$productInfo"
+            },
+            {
+                $lookup: {
+                    from: "categoryprods", // Asegúrate de que coincide con el nombre real de la colección
+                    localField: "productInfo.category",
+                    foreignField: "_id",
+                    as: "categoryInfo"
+                }
+            },
+            {
+                $unwind: "$categoryInfo"
+            },
+            {
+                $group: {
+                    _id: "$categoryInfo._id", // Agrupa por ID de categoría
+                    categoryName: { $first: "$categoryInfo.name" },
+                    totalStock: { $sum: "$amount" } // Suma la cantidad total de stock por categoría
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    idCategory: "$_id",
+                    categoryName: 1,
+                    totalStock: 1
+                }
+            }
+        ]);
+
+        res.status(200).json({ stockByCategory });
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: `Error del servidor: ${error}`
+        });
+    }
+}
+
+
+
 module.exports = {
     add_stock,
     read_stock,
     read_stockProducto,
     read_stockPOS,
     update_stock,
-    delete_stock
+    delete_stock,
+    count_products_by_POS,
+    count_stock_by_category
 };
